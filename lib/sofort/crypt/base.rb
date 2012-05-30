@@ -17,6 +17,7 @@ module Sofort
           self.digest(values_holder).eql?(digest)
         end
   
+      end
     end
 
   end

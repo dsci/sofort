@@ -4,8 +4,7 @@ module Sofort
 
     class Facade < HashWithIndifferentAccess
       
-      def initialize(type,resource=nil)
-        @type     = type 
+      def initialize(resource=nil)
         @resource = resource unless resource.nil?
         #self.send("build_#{type}_digest")
       end
@@ -29,14 +28,14 @@ module Sofort
           :user_variable_3 => "",
           :user_variable_4 => "",
           :user_variable_5 => "",
-          :project_password => Sofort.project_password 
+          :project_password => Sofort.project_credentials
         }   
         merge!(values)
         return Encryptors::Base.digest(self)
       end
 
       def response_digest
-        digest 
+        #digest 
       end
 
       def sofort_string

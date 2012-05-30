@@ -7,6 +7,10 @@ require 'sofort'
 # in ./support/ and its subdirectories.
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
+require "rails_app/config/environment"
+
+require 'rspec/rails'
+
 RSpec.configure do |config|
   
 end

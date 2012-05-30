@@ -1,0 +1,4 @@
+<%= form_tag sofort_gateway_url, :method => "POST" do %>
+<%= sofort_fields(@resource, :amount => @amount) %>
+
+<%end%>
