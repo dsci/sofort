@@ -1,0 +1,6 @@
+development:
+  host: localhost
+  database: sofort_development
+test:
+  host: localhost
+  database: sofort_test

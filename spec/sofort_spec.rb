@@ -39,6 +39,22 @@ describe Sofort do
 
     end
 
+    context "reason configured with Proc" do
+
+      before do
+        Sofort.setup do |config|
+          config.reason = Proc.new {|resource| "#{resource.email}/#{resource.holder} sends some money today."}
+        end
+      end
+
+      it "calls the proc if resource is given" do
+        email = "master@universe.com"
+        expected_reason = "#{email}/Hans Meiser sends some money today."
+        Sofort.reason(User.new(:email => email)).should eq expected_reason 
+      end
+
+    end
+
     context "configuration with limitations" do
 
       context "currency" do

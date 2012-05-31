@@ -15,6 +15,8 @@ module Sofort
         values_fields +=  hidden_field_tag("project_id", Sofort.project_id)
         values_fields +=  hidden_field_tag("hash", Sofort::Credentials::Facade.new(resource).input_digest)
         values_fields +=  hidden_field_tag("amount", amount)
+        values_fields +=  hidden_field_tag("user_variable_0", resource.sofort_token)
+        values_fields +=  hidden_field_tag("reason_1", Sofort.reason(resource))
         Sofort.not_modifiable_params.each do |param|
           begin
             values_fields += hidden_field_tag(Sofort::PARAM_MAPPINGS[param], resource.send(param))

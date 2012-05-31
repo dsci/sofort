@@ -5,7 +5,7 @@ describe "sofort/form.html.erb" do
   let(:resource){User.new(:account_number => 112233)}
   let(:amount){25}
   before :all do
-    resource.build_sofort_credential
+    resource.build_sofort_token
     assign(:resource, resource)    
     assign(:amount, amount)
   end 
@@ -37,6 +37,11 @@ describe "sofort/form.html.erb" do
     it "displays amount" do 
       rendered.should =~/name="amount"/
       rendered.should =~/value="#{amount}"/
+    end
+
+    it "displays sofort_token of user" do
+      rendered.should =~/name="user_variable_0"/
+      rendered.should =~/value="#{resource.sofort_token}"/
     end
 
     context "which are marked as required by config" do

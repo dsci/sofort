@@ -5,7 +5,7 @@ module Sofort
 
       def sofort
 
-        field :sofort_credential, :type => String
+        field :sofort_token, :type => String
 
         field :bank_code,         :type => String
 
@@ -13,9 +13,22 @@ module Sofort
 
         field :holder,            :type => String
 
-        define_method(:build_sofort_credential) do
-          self.write_attribute(:sofort_credential,rand(36**Sofort.stretches).to_s(36))
+        define_method(:build_sofort_token) do
+          self.write_attribute(:sofort_token,rand(36**Sofort.stretches).to_s(36))
         end  
+
+        # singleton_class is ActiveSupport specific. 
+        # Pure Ruby it should be
+        #
+        # singleton_class = class << self do
+        #                     self
+        #                   end
+        singleton_class.instance_eval do
+          define_method(:find_by_sofort_token) do |token|
+            criteria = self.send(:where, :sofort_token => token)
+            return criteria.length > 0 ? criteria.first : nil
+          end
+        end
       end
 
     end

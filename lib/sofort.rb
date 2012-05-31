@@ -105,7 +105,7 @@ module Sofort
   # 
   mattr_writer    :timeout
 
-  # A number which length the sofort_credential attribute 
+  # A number which length the sofort_token attribute 
   # should have. Default to 128.
   mattr_writer    :stretches
 
@@ -113,11 +113,38 @@ module Sofort
   # If it is true, 'sofort' updates the users balance. 
   # 
   mattr_writer    :prepaid_mode
+  @@prepaid_mode = false
 
   # A 'Verwendungszweck' which is used as a suffix before users
   # email to identify the payment. 
   # Defaults to an empty string.
   mattr_writer    :reason
+  @@reason = "1"
+
+  # A anonymous function which is called after transaction was
+  # successful. 
+  # This has to be a Proc and gets to arguments:
+  # 
+  # * resource - This may be an user instance
+  # * params   - A hash with callback parameters
+  #     * sofort_token      - The users sofort_token
+  #     * transaction_time  - A UNIX timestamp of the time the transaction
+  #                           was successful.
+  #     * amount            - The amount that was paid.
+  #
+  # Note: If prepaid_mode is true this could be omitted.
+  mattr_writer    :on_transaction_success
+
+  # The parent controller which the sofort controller should inherit from. 
+  # Thsi defaults to 'ApplicationController' and should be a String.
+  mattr_accessor :parent_controller
+  @@parent_controller = 'ApplicationController'
+
+  # 
+  #
+  # 
+  mattr_accessor :resource_klass
+  @@resource_klass = 'User'
 
   # Shortcut for the country where sofortueberweisung is used.
   # This is used within the form helpers. 
@@ -167,12 +194,28 @@ module Sofort
     @currency
   end
 
-  def reason
-    @@reason ||= ""
+  def reason(resource=nil)
+    if resource.nil?
+      return @@reason ||= "" 
+    else
+      if @@reason.is_a? Proc
+        return @@reason.call(resource)
+      else
+        @@reason
+      end
+    end
   end
 
   def orm
     @@orm ||= :mongoid
+  end
+
+  def on_transaction_success
+    unless defined? @@on_transaction_success
+      Proc.new{|resource,params|}
+    else
+      return @@on_transaction_success 
+    end
   end
 
   def setup(&block)
@@ -192,5 +235,5 @@ module Sofort
   end
 end
 
-require "sofort/rails"
 require "sofort/models"
+require "sofort/rails"
