@@ -15,7 +15,7 @@ describe "sofort/form.html.erb" do
   end
 
   it "displays sofort hidden inputs in a form" do
-    rendered.should include("https:://www.sofort-ueberweisung.de/payment/start")
+    rendered.should include("https://www.sofort-ueberweisung.de/payment/start")
   end
 
   context "required fields" do

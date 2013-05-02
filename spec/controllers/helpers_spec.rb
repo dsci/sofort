@@ -9,7 +9,7 @@ describe ApplicationController, :type => :controller do
   end
 
   it "generates gateway url" do
-    controller.sofort_gateway_url.should eq "https:://www.sofort-ueberweisung.de/payment/start"
+    controller.sofort_gateway_url.should eq "https://www.sofort-ueberweisung.de/payment/start"
   end
   
 end

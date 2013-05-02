@@ -24,7 +24,6 @@ class Sofort::CallbackController < SofortController
       user = current_user
       token_valid = user.sofort_token.eql?(sofort_token)
       #token = Sofort::Encryptors::Base.valid?(sofort_token, Sofort::Credentials::Facade.new(user))
-      #p token 
     else 
       user = Sofort.resource_class.constantize.send(:find_by_user_token, sofort_token)
       raise Sofort::Errors::NoUserFoundWithTokenError.new, I18n.t('sofort.transaction.failed.missing_user') if user.nil?

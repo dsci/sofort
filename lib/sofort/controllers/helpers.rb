@@ -10,7 +10,7 @@ module Sofort
       end
 
       def sofort_gateway_url
-        "https:://www.sofort-ueberweisung.#{Sofort.country.to_s}/payment/start"
+        "https://www.sofort-ueberweisung.#{Sofort.country.to_s}/payment/start"
       end
 
     end
