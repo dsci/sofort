@@ -119,7 +119,7 @@ module Sofort
   # email to identify the payment. 
   # Defaults to an empty string.
   mattr_writer    :reason
-  @@reason = "1"
+  #@@reason = "1"
 
   # A anonymous function which is called after transaction was
   # successful. 
