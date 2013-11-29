@@ -1,9 +1,9 @@
 require 'bundler/setup'
 
-begin 
+begin
   Bundler.setup
 rescue Bundler::GemNotFound
-  raise RuntimeError, "Bundler couldn't find some gems." + 
+  raise RuntimeError, "Bundler couldn't find some gems." +
     "Did you run 'bundle install'?"
 end
 
@@ -49,13 +49,13 @@ module Sofort
   # User or customer id at sofortueberweisung.de
   mattr_accessor  :customer_id
 
-  # The project id for which the payment should be done. 
+  # The project id for which the payment should be done.
   # Any id registered at sofortueberweisung.de
   mattr_accessor  :project_id
 
   # The project credentials, like sofortueberweisung say
-  # 'Projekt-Passwort'. 
-  # This is required by 'sofort' and not optional. 
+  # 'Projekt-Passwort'.
+  # This is required by 'sofort' and not optional.
   mattr_accessor  :project_credentials
 
   # The response credentials, like sofortueberweisung say
@@ -63,7 +63,7 @@ module Sofort
   # This is required by 'sofort' and not optional.
   mattr_accessor  :response_credentials
 
-  # The orm adapter which is used. 
+  # The orm adapter which is used.
   # Currently supported are Mongoid.
   def orm=(orm)
     unless ALLOWED_ORM_ADAPTERS.include?(orm)
@@ -81,50 +81,50 @@ module Sofort
   # Optional configuration fields                                             #
   #############################################################################
 
-  # Parameters which are not modifiable by user. 
+  # Parameters which are not modifiable by user.
   # They are configured at sofortueberweisung.de
   #
   # Possible entries are:
   # :account_number,:bank_code, :holder, :user_country_id,:country_id
   mattr_writer :not_modifiable_params
 
-  # A database attribute field at the User model. 
+  # A database attribute field at the User model.
   # Note that 'sofort' requires a current_user method
   # which returns an instance of the actual logged in
   # user.
-  # This is an optional field and only used if 
+  # This is an optional field and only used if
   # prepaid_mode is true
   mattr_accessor  :user_balance
-  
+
   # A custom encryptor which have to available through
   # 'digest/sha2'
-  # Currently supported are sha256 and sha512, whereby 
-  # sha512 is the default one. 
+  # Currently supported are sha256 and sha512, whereby
+  # sha512 is the default one.
   mattr_writer    :encryptor
 
-  # 
+  #
   mattr_writer    :timeout
 
-  # A number which length the sofort_token attribute 
+  # A number which length the sofort_token attribute
   # should have. Default to 128.
   mattr_writer    :stretches
 
   # A flag if a prepaid_mode or 'coin' mode should be used.
-  # If it is true, 'sofort' updates the users balance. 
-  # 
+  # If it is true, 'sofort' updates the users balance.
+  #
   mattr_writer    :prepaid_mode
   @@prepaid_mode = false
 
   # A 'Verwendungszweck' which is used as a suffix before users
-  # email to identify the payment. 
+  # email to identify the payment.
   # Defaults to an empty string.
   mattr_writer    :reason
   #@@reason = "1"
 
   # A anonymous function which is called after transaction was
-  # successful. 
+  # successful.
   # This has to be a Proc and gets to arguments:
-  # 
+  #
   # * resource - This may be an user instance
   # * params   - A hash with callback parameters
   #     * sofort_token      - The users sofort_token
@@ -135,19 +135,21 @@ module Sofort
   # Note: If prepaid_mode is true this could be omitted.
   mattr_writer    :on_transaction_success
 
-  # The parent controller which the sofort controller should inherit from. 
+  # The parent controller which the sofort controller should inherit from.
   # Thsi defaults to 'ApplicationController' and should be a String.
   mattr_accessor :parent_controller
   @@parent_controller = 'ApplicationController'
 
-  # 
   #
-  # 
+  #
+  #
   mattr_accessor :resource_klass
   @@resource_klass = 'User'
 
+  @@reason = ""
+
   # Shortcut for the country where sofortueberweisung is used.
-  # This is used within the form helpers. 
+  # This is used within the form helpers.
   # If country code is not allowed, a NotAllowedCountryError
   # is raised.
   def country=(country)
@@ -163,7 +165,7 @@ module Sofort
     @country ||= I18n.default_locale
   end
 
-  def timeout 
+  def timeout
     @@timeout ||= 120
   end
 
@@ -185,7 +187,7 @@ module Sofort
 
   def currency=(currency)
     unless ALLOWED_CURRENCIES.include?(currency)
-      raise Errors::NotAllowedCurrencyError.new, "not allowed currency configured!" 
+      raise Errors::NotAllowedCurrencyError.new, "not allowed currency configured!"
     end
     @currency = currency.upcase
   end
@@ -196,7 +198,7 @@ module Sofort
 
   def reason(resource=nil)
     if resource.nil?
-      return @@reason ||= "" 
+      return @@reason ||= ""
     else
       if @@reason.is_a? Proc
         return @@reason.call(resource)
@@ -214,7 +216,7 @@ module Sofort
     unless defined? @@on_transaction_success
       Proc.new{|resource,params|}
     else
-      return @@on_transaction_success 
+      return @@on_transaction_success
     end
   end
 
