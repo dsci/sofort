@@ -48,4 +48,7 @@ pkg
 # For rubinius:
 #*.rbc
 
+.ruby-version
+.ruby-gemset
+
 try.rb
